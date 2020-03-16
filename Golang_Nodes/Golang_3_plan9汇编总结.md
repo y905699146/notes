@@ -6,5 +6,4 @@ go tool compile -N -L -S xxx.go
 -N  禁止编译优化
 -L  禁止内联
 -S  生成汇编代码
-
 ```
