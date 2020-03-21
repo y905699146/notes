@@ -11,17 +11,24 @@ go tool compile -N -L -S xxx.go
 ## plan9汇编中的寄存器
 - FP寄存器
 
-    使用形如 symbol+offset(FP) 的方式，引用函数的输入参数。例如 arg0+0(FP)，arg1+8(FP)，使用 FP 不加 symbol 时，无法通过编译，在汇编层面来讲，symbol 并没有什么用，加 symbol 主要是为了提升代码可读性。另外，官方文档虽然将伪寄存器 FP 称之为 frame pointer，实际上它根本不是 frame pointer，按照传统的 x86 的习惯来讲，frame pointer 是指向整个 stack frame 底部的 BP 寄存器。假如当前的 callee 函数是 add，在 add 的代码中引用 FP，该 FP 指向的位置不在 callee 的 stack frame 之内，而是在 caller 的 stack frame 上
+    使用形如 symbol+offset(FP) 的方式，引用函数的输入参数。例如 arg0+0(FP)，arg1+8(FP)，使用 FP 不加 symbol 时，无法通过编译，在汇编层面来讲，symbol 并没有什么用，加 symbol 主要是为了提升代码可读性。另外，官方文档虽然将伪寄存器 FP 称之为 frame pointer，实际上它根本不是 frame pointer，按照传统的 x86 的习惯来讲，frame pointer 是指向整个 stack frame 底部的 BP 寄存器。假如当前的 callee 函数是 add，在 add 的代码中引用 FP，该 FP 指向的位置不在 callee 的 stack frame 之内，而是在 caller 的 stack frame 上,也就是说，FP通常用解引用传入函数内的参数。通过symbol+offset(FP)去获取，简单来说就是获取入参的，它指向的入参的栈底
 
 
 - SP寄存器
     
-    SP寄存器指向当前栈帧
+    SP寄存器指向当前栈帧，就是指向栈顶。
+    SP分为硬件SP和伪SP，区分方法是SP前面有没有symbol,例如：
+    ```
+    "".a+128(SP)    //伪SP
+    8(SP)           //硬件SP
+    ```
 
 
 
 - SB寄存器
 
+
+    全局静态基指针，一般用来声明函数或全局变量
 
 - PC寄存器
    
@@ -30,14 +37,14 @@ go tool compile -N -L -S xxx.go
 ### ×86寄存器和plan9寄存器的对应关系
 | ×86  |  plan9 |  用途 |
 | ---- |  ----  |  ---  |
-| rax  |   AX   |       | 
+| rax  |   AX   |  累加器     | 
 | rbx  |   BX   |       | 
 | rcx  |   CX   |       | 
 | rdx  |   DX   |       | 
 | rdi  |   DI   |       | 
 | rsi  |   SI   |       | 
-| rbp  |   BP   |       | 
-| rsp  |   SP   |       | 
+| rbp  |   BP   |  栈基址     | 
+| rsp  |   SP   |  栈顶       | 
 | r8   |   R8   |       | 
 | r9   |   R9   |       | 
 | r10  |   R10  |       | 
@@ -110,3 +117,15 @@ LEAQ (BX)(AX*8),CX    => CX = BX + (AX * 8)
     TEXT symbol(SB), [flags,] $framesize[-argsize]
   ```
   函数的定义部分由5个部分组成：TEXT指令、函数名、可选的flags标志、函数帧大小和可选的函数参数大小。
+
+  flags取值：
+  ```
+  NOPROF = 1     //已弃用
+  DUPOK  = 2     //允许单个二进制文件中有多个相同的symbol
+  NOSPLIT= 4     //禁止栈伸缩
+  RODATA = 8     //
+  NOPTR = 16     //
+  WRAPPER = 32
+  NEEDCTXT= 64
+  ```
+  当使用这些 flag 的字面量时，需要在汇编文件中 #include "textflag.h"。
