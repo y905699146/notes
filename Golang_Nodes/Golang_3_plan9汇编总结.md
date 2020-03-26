@@ -129,3 +129,39 @@ LEAQ (BX)(AX*8),CX    => CX = BX + (AX * 8)
   NEEDCTXT= 64
   ```
   当使用这些 flag 的字面量时，需要在汇编文件中 #include "textflag.h"。
+
+  $framesize 指栈帧大小，包括参数返回值大小和函数函数内部使用参数的大小，不包括调用其他函数时ret address大小。
+  $argsize 指参数大小，只包括参数+返回值的大小。
+
+
+## golang 标准库的一些数据结构的底层表示
+
+- 数值类型
+    1. int/int8/int16/int32/int64
+    2. uint/uint8/uint16/uint32/uint64
+    3. float32/float64
+    4. byte/rune
+    5. uintptr
+   
+   在汇编中为一段连续的内存
+
+- slice
+  
+    1. 首元素地址
+    2. slice 的 len
+    3. slice 的 cap
+   
+- string
+  
+   在汇编层面 string 就是地址 + 字符串长度
+
+- map
+    
+    map 的创建会调用 runtime.makemap_small(SB)
+    map 的赋值调用的是runtime.mapassign_fast64(SB) 函数
+- struct
+
+    struct 在汇编层面实际上就是一段连续内存
+- channel
+    
+    和map类似
