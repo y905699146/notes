@@ -2,7 +2,7 @@
 #include<type_traits>
 
 class A{};
-class B:A{};
+class B:A{};  
 class C{};
 int main(){
     std::cout<<std::is_base_of<A,B>::value<<std::endl;
