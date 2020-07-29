@@ -264,4 +264,33 @@ Rust 分为三种结构体
 - 单元结构体
 
 ### 枚举体
+```
+//无参数枚举体
+enum Number{
+    Zero,
+    One,
+    Two,
+}
+//类C枚举体
+enum Color{
+    Red = 0xff0000,
+    Green = 0x00ff00,
+    Blue = 0x0000ff,
+}
+//带参数枚举体
+enum Ipaddr{
+    V4(u8,u8,u8,u8),
+    V6(String),
+}
+```
 
+## 常用集合类型
+- 线性序列 ： 向量(Vec)，双端队列(VecDeque)，链表(LinkedList)
+- Key-Value映射表: 无序哈希表(HashMap),有序哈希表(BTreeMap)
+- 集合类型: 无序集合(HashSet)，有序集合(BTreeSet)
+- 优先队列: 二叉堆(BinaryHeap)
+
+## 智能指针
+Rust 中的值默认被分配到栈内存。可以通过Box<T>将值放到堆中，Box<T>指向类型为T的堆内存分配值的智能指针。当Box<T>超出作用域时，将调用析构函数，释放内存，可以通过解引用操作来获取Box<T>中的T。
+
+## 泛型
