@@ -144,3 +144,124 @@ Rust 对全局变量的使用有许多限制。包括：
 - 全局变量必须在声明的时候马上初始化
 - 全局变量的初始化必须是简单赋值，不能包括复杂的表达式、语句和函数调用
 - 带有 mut 修饰的全局变量，在使用的时候必须使用 unsafe
+
+## 数组类型
+
+特点：
+- 数组大小固定
+- 元素均为同类型
+- 默认不可变
+
+数组类型签名为 ： [T;N]  T是一个泛型标记，表示数据类型，N是长度
+
+## 范围类型
+
+Rust内置了范围类型，包括左闭右开和全闭两种区间：
+```
+for i in (1..5)    //1,2,3,4
+for i in (1..=5)   //1,2,3,4,5
+```
+
+## 切片类型
+切片(Slice)是对一个数组(固定大小数组和动态数组)的引用片段，有利于安全有效的访问数组的一部分，而不需要拷贝。
+```
+let arr : [i32; 5]=[1,2,3,4,5];
+let t = &arr[1..2];  //t是一个切片
+```
+
+## 字符串类型
+String是一个可变的、堆上分配的UTF-8的字节缓冲区。
+
+str是一个不可变的固定长度的字符串，如果是从String解引用而来的，则指向堆上，如果是字面值，则指向静态内存。
+
+&String 是String的borrowed类型，这只不过是一个指针类型，可以传递而不放弃ownership。事实上，一个&String可以当做是&str。
+
+## 原生指针类型
+
+Rust提供多种类型的指针，包括引用，原生指针，函数指针，和智能指针。
+
+引用本质是非空指针，引用主要用于safe Rust中;
+
+原生指针可以操控地址，主要用于unsafe Rust中；
+
+
+
+## never类型
+
+never类型，即 ! 该类型用于表示永远不可能有返回值的计算类型，比如现场退出时候不可能有返回值。
+
+never类型属于实验特性，使用需要使用 #![feature(never_type)]，所以需要在Nightly版本下使用该特性。
+
+## struct impl trait的作用
+
+struct定义结构体
+```
+struct People{
+    name : String,
+    weight : i32
+}
+```
+impl 关键字定义结构体成员方法
+```
+impl People{
+    fn new(n :String,w : i32) -> People{
+        People{
+            name : n,
+            weight : w
+        }
+    }
+    fn printInfo(&self){
+        println!{"{},{}",self.name,self.weight};
+    }
+}
+```
+成员函数操作成员变量需要使用self参数，有这样几种类型：
+- self，允许实现者移动和修改对象，对应的闭包特性为FnOnce
+- &self，既不允许实现者移动对象也不允许修改，对应的闭包特性为Fn
+- &mut self，允许实现者修改对象但不允许移动，对应的闭包特性为Fn Mut
+- 不含self参数的关联函数称为静态方法 (static method)
+
+trait用来定义接口：
+```
+trait Arae{
+    fn area(&self) -> f64;
+}
+//struct定义一个类
+struct Circle{
+    r : f64
+}
+//让具体类实现接口
+impl Area for Circle{
+    fn area(&self) -> f64{
+        return (3.14 * self.r)
+    }
+}
+```
+
+
+
+## 复合数据类型
+
+### 元组（tuple）
+和python类型 ，类似 (A,B,C,D)这种结构，固定长度，可以根据索引来获取元组内部的值：
+```
+let tuple : (&'static str, i32 , char) = ("hello",5,'c');
+print!{"{:?},{:?}",tuple.0,tuple.1} 
+```
+元组支持模式解构。
+
+当元组只有一个值的时候，定义为 (0,)，加逗号是为了和其他值区分
+
+### 结构体
+Rust 分为三种结构体
+
+- 具名结构体
+
+
+- 元组结构体
+
+
+- 单元结构体
+
+### 枚举体
+
