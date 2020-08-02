@@ -24,5 +24,21 @@ let child = builder.spawn(move ||{ xxxxx; });
 ## 线程本地存储 （thread_local）
 每个线程都有独立的存储空间，可以存放其他线程无法访问的数据。
 ```
-
+//定义
+thread_local! {static FOO: RefCell<u32> = RefCell::new(1)};
 ```
+
+## park/unpark 和 yield_now() 函数
+
+park 阻塞当前线程
+
+unpark 重启当前线程
+
+yield_now() 让出当前操作系统分配的时间片
+
+## Send / Sync
+
+- 实现了Send的类型，可以安全的在线程间传递所有权，可以跨线程移动
+- 实现了Sync的类型，可以安全的在线程间传递（不可变）的借用，可以跨线程分享
+
+与Send/Sync相反的标记是!Send/!Sync，表示不能在线程间安全传递的类型
