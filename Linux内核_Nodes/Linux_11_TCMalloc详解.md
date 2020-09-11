@@ -20,4 +20,6 @@ TCMalloc是谷歌开发的内存分配器，Golang的内存分配的实现采用
 - Span : 连续n个Page称为一个Span
 - PageHeap : 以span为单位向系统申请内存，申请到的span可能只有一个page，也可能包含n个page。可能会被划分为一系列的小对象，供小对象分配使用，也可能当做一整块当做中对象或大对象分配。
 
-- ThreadCache : 
+- ThreadCache : tcmalloc为每个线程都分配可一个线程本地ThreadCache，小内存从ThreadCache分配
+
+- CentralCache : ThreadCache不够用的时候，会从CentralCache中获取空间放到ThreadCache中。
