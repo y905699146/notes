@@ -16,12 +16,17 @@ PE文件需要做磁盘到内存的映射，当PE文件加载到进程虚拟内�
     RVA + ImageBase = VA  (ImageBase为基准位置)
 
 PE文件加载到内存中时，也需要完成RVA到RAW的映射：
+
     RAW = RVA　－　VA　＋　PointerToRawData
+
     PointerToRawData是PE文件中的节区起始地址。
+
     VA是RAW中对于节区的起始地址
 
 
 ## IAT （导入地址表）
+    
+
 
 
 ## EAT　（导出地址表）
